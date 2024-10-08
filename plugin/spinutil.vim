@@ -13,7 +13,7 @@ function! RunSpinOnCurrentFile()
     let filename = expand('%:p')
     if fnamemodify(filename, ':e') !=# 'pml'
         echohl ErrorMsg
-        echo "❌ Error: The current file is not a .pml file."
+        echo "Error: The current file is not a .pml file."
         echohl None
         return ''
     endif
@@ -37,7 +37,7 @@ function! CompilePanC()
         endif
         return ''
     else
-        return "❌ pan.c not found"
+        return "pan.c not found"
     endif
 endfunction
 
@@ -79,7 +79,7 @@ function! RunAoutAndShowResult()
         call setbufline(bufnum, 2, result_lines)
     else
         echohl ErrorMsg
-        echo "❌ a.out not found"
+        echo "Error: a.out not found"
         echohl None
     endif
 endfunction
@@ -93,7 +93,7 @@ function! MainSpinProcess()
     let spin_error = RunSpinOnCurrentFile()
     if !empty(spin_error)
         echohl ErrorMsg
-        echo "❌ Spin failed: " . spin_error
+        echo "Error:Spin failed: " . spin_error
         echohl None
         return
     endif
@@ -102,7 +102,7 @@ function! MainSpinProcess()
     let compile_error = CompilePanC()
     if !empty(compile_error)
         echohl ErrorMsg
-        echo "❌ Compilation failed: " . compile_error
+        echo "Error: Compilation failed." . compile_error
         echohl None
         return
     endif
