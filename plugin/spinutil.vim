@@ -57,29 +57,24 @@ endfunction
 " a.out を実行し、結果を専用バッファに表示
 function! RunAoutAndShowResult()
     if filereadable('a.out')
-        let result = system('./a.out')
-
-        " Null 文字を削除
-        let result = substitute(result, '\%x00', '', 'g')
-
-        " 改行で分割して行ごとのリストにする
-        let result_lines = split(result, "\n")
+        " systemlist() を使って出力を行ごとのリストで取得
+        let result_lines = systemlist('./a.out')
 
         " 結果表示用のバッファを開く
         let bufnum = OpenResultBuffer()
 
-        " 結果を新しいバッファに出力
+        " エラーチェック：実行結果にエラーが含まれているかを確認
         if join(result_lines) =~ 'assertion violated'
             call setbufline(bufnum, 1, '❌ Verification failed:')
         else
             call setbufline(bufnum, 1, '🟢 Verification successful:')
         endif
 
-        " 結果の各行を表示（2行目以降に）
+        " 結果の各行をバッファの2行目以降に表示
         call setbufline(bufnum, 2, result_lines)
     else
         echohl ErrorMsg
-        echo "Error: a.out not found"
+        echo "❌ a.out not found"
         echohl None
     endif
 endfunction
