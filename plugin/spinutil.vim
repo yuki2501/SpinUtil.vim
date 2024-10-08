@@ -58,16 +58,25 @@ endfunction
 function! RunAoutAndShowResult()
     if filereadable('a.out')
         let result = system('./a.out')
-        
+
+        " Null 文字を削除
+        let result = substitute(result, '\%x00', '', 'g')
+
+        " 改行で分割して行ごとのリストにする
+        let result_lines = split(result, "\n")
+
         " 結果表示用のバッファを開く
         let bufnum = OpenResultBuffer()
 
         " 結果を新しいバッファに出力
-        if result =~ 'assertion violated'
-            call setbufline(bufnum, 1, '❌ Verification failed: ' . result)
+        if join(result_lines) =~ 'assertion violated'
+            call setbufline(bufnum, 1, '❌ Verification failed:')
         else
-            call setbufline(bufnum, 1, '🟢 Verification successful')
+            call setbufline(bufnum, 1, '🟢 Verification successful:')
         endif
+
+        " 結果の各行を表示（2行目以降に）
+        call setbufline(bufnum, 2, result_lines)
     else
         echohl ErrorMsg
         echo "❌ a.out not found"
