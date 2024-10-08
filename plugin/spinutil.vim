@@ -9,7 +9,7 @@ function! CleanPanFilesAndAout()
 endfunction
 
 " spin -a を実行する関数
-function! RunSpinOnCurrentFile()
+function! RunSpinOnCurrentFile() abort
     let filename = expand('%:p')
     if fnamemodify(filename, ':e') !=# 'pml'
         echohl ErrorMsg
@@ -27,7 +27,7 @@ function! RunSpinOnCurrentFile()
 endfunction
 
 " pan.c をコンパイルする関数
-function! CompilePanC()
+function! CompilePanC() abort
     let compiler = get(g:, 'spin_c_compiler', 'cc')
     if filereadable('pan.c')
         let compile_cmd = compiler . ' pan.c -o a.out'
@@ -102,7 +102,7 @@ function! MainSpinProcess()
     let compile_error = CompilePanC()
     if !empty(compile_error)
         echohl ErrorMsg
-        echo "Error: Compilation failed." . compile_error
+        echo "Error: Compilation failed. " . compile_error
         echohl None
         return
     endif
