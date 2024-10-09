@@ -49,7 +49,6 @@ function! OpenResultBuffer()
     enew  " 新しいバッファを作成
     setlocal buftype=nofile
     setlocal bufhidden=wipe
-    setlocal nomodifiable
     setlocal noswapfile
     setlocal nonumber norelativenumber " 行番号を非表示に
     return bufnr('%')  " 新しいバッファ番号を返す
@@ -78,6 +77,7 @@ function! RunAoutAndShowResult()
         echo "❌ a.out not found"
         echohl None
     endif
+    setlocal nomodifiable
 endfunction
 
 " 全体のメイン機能を実行する関数
