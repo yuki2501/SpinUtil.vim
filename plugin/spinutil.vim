@@ -13,8 +13,9 @@ function! RunSpinOnCurrentFile() abort
     let filename = expand('%:p')
     if fnamemodify(filename, ':e') !=# 'pml'
         echohl ErrorMsg
-        echo "Error: The current file is not a .pml file."
+        echoerr "Error: The current file is not a .pml file."
         echohl None
+        throw ''
         return ''
     endif
 
@@ -55,7 +56,7 @@ function! OpenResultBuffer()
 endfunction
 
 " a.out を実行し、結果を専用バッファに表示
-function! RunAoutAndShowResult()
+function! RunAoutAndShowResult() abort
     if filereadable('a.out')
         " systemlist() を使って出力を行ごとのリストで取得
         let result_lines = systemlist('./a.out')
@@ -74,15 +75,15 @@ function! RunAoutAndShowResult()
         call setbufline(bufnum, 2, result_lines)
     else
         echohl ErrorMsg
-        echo "❌ a.out not found"
+        echo "Error: a.out not found"
         echohl None
+        throw ''
     endif
     setlocal nomodifiable
 endfunction
 
 " 全体のメイン機能を実行する関数
 function! MainSpinProcess()
-    " ファイルの掃除
     let temp_dir = tempname()
     call mkdir(temp_dir)
 
