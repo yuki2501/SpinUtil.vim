@@ -49,7 +49,7 @@ function! OpenResultBuffer()
     enew  " 新しいバッファを作成
     setlocal buftype=nofile
     setlocal bufhidden=wipe
-    setlocal modifiable=v:false
+    setlocal nomodifiable
     setlocal noswapfile
     setlocal nonumber norelativenumber " 行番号を非表示に
     return bufnr('%')  " 新しいバッファ番号を返す
