@@ -82,30 +82,40 @@ endfunction
 " 全体のメイン機能を実行する関数
 function! MainSpinProcess()
     " ファイルの掃除
-    call CleanPanFilesAndAout()
+    let temp_dir = tempname()
+    call mkdir(temp_dir)
 
-    " spin -a の実行
-    let spin_error = RunSpinOnCurrentFile()
-    if !empty(spin_error)
-        echohl ErrorMsg
-        echo "Error:Spin failed: " . spin_error
-        echohl None
-        return
-    endif
+    let current_dir = getcwd()
+    execute 'cd' temp_dir
+    try
+        call CleanPanFilesAndAout()
 
-    " pan.c のコンパイル
-    let compile_error = CompilePanC()
-    if !empty(compile_error)
-        echohl ErrorMsg
-        echo "Error: Compilation failed. " . compile_error
-        echohl None
-        return
-    endif
+        " spin -a の実行
+        let spin_error = RunSpinOnCurrentFile()
+        if !empty(spin_error)
+            echohl ErrorMsg
+            echo "Error:Spin failed: " . spin_error
+            echohl None
+            return
+        endif
 
-    " a.out の実行結果を表示
-    call RunAoutAndShowResult()
+        " pan.c のコンパイル
+        let compile_error = CompilePanC()
+        if !empty(compile_error)
+            echohl ErrorMsg
+            echo "Error: Compilation failed. " . compile_error
+            echohl None
+            return
+        endif
+
+        " a.out の実行結果を表示
+        call RunAoutAndShowResult()
+    finally
+        execute 'cd' current_dir
+
+        call delete(temp_dir, 'rf')
+    endtry
 endfunction
 
 " Vim コマンドとして公開
 command! RunSpin call MainSpinProcess()
-
